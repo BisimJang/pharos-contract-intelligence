@@ -1,64 +1,77 @@
 // pharos_rpc.js — Shared Pharos network config and provider factory
 // Supports testnet, mainnet, and auto-detection.
+//
+// ⚠️  RPC AUTHENTICATION NOTE:
+// The Pharos testnet RPC (testnet.dplabs-internal.com) now requires an API key
+// for programmatic access. Set your RPC URL via environment variables:
+//
+//   PHAROS_TESTNET_RPC=https://your-api-key.pharos.zan.top/node/ext/bc/C/rpc
+//   PHAROS_MAINNET_RPC=https://your-api-key.pharos-mainnet.zan.top/...
+//
+// Free API keys: https://zan.top  |  https://nirvana.xyz  |  https://www.alchemy.com
+// Default fallback (may be rate-limited): https://testnet.dplabs-internal.com
 
 import { ethers } from "ethers";
+
+const TESTNET_RPC = process.env.PHAROS_TESTNET_RPC || "https://testnet.dplabs-internal.com";
+const MAINNET_RPC = process.env.PHAROS_MAINNET_RPC || "https://pharos-rpc.publicnode.com";
 
 export const NETWORKS = {
   testnet: {
     name: "Pharos Testnet",
-    rpc: "https://testnet.dplabs-internal.com",
+    rpc: TESTNET_RPC,
     chainId: 688688,
-    explorer: "https://pharosscan.xyz",
-    explorerApi: "https://pharosscan.xyz/api",
-    nativeToken: "PTT",
+    explorer: "https://testnet.pharosscan.xyz",
+    explorerApi: "https://testnet.pharosscan.xyz/api",
+    nativeToken: "PHRS",
   },
   mainnet: {
     name: "Pharos Mainnet",
-    rpc: "https://pharos-rpc.publicnode.com",
+    rpc: MAINNET_RPC,
     chainId: 688688,
     explorer: "https://pharosscan.xyz",
     explorerApi: "https://pharosscan.xyz/api",
-    nativeToken: "PHR",
+    nativeToken: "PHRS",
   },
 };
 
 /**
  * Create an ethers.js provider for the given network key.
+ * Uses staticNetwork to avoid eth_chainId preflight calls.
  * @param {"testnet"|"mainnet"} networkKey
  * @returns {ethers.JsonRpcProvider}
  */
 export function getProvider(networkKey) {
   const net = NETWORKS[networkKey];
   if (!net) throw new Error(`Unknown network: "${networkKey}". Use "testnet" or "mainnet".`);
-  return new ethers.JsonRpcProvider(net.rpc);
+  const staticNet = ethers.Network.from({ chainId: net.chainId, name: net.name });
+  return new ethers.JsonRpcProvider(net.rpc, staticNet, { staticNetwork: staticNet });
 }
 
 /**
  * Auto-detect which network a transaction hash or address belongs to.
- * Tries testnet first, then mainnet. Returns the network key and provider.
+ * Tries testnet first, then mainnet.
  * @param {string} hashOrAddress
  * @returns {Promise<{ networkKey: string, provider: ethers.JsonRpcProvider, network: object }>}
  */
 export async function autoDetectNetwork(hashOrAddress) {
   for (const [key, net] of Object.entries(NETWORKS)) {
-    const provider = new ethers.JsonRpcProvider(net.rpc);
+    const staticNet = ethers.Network.from({ chainId: net.chainId, name: net.name });
+    const provider = new ethers.JsonRpcProvider(net.rpc, staticNet, { staticNetwork: staticNet });
     try {
       let found = false;
       if (hashOrAddress.length === 66) {
-        // Looks like a tx hash
         const tx = await provider.getTransaction(hashOrAddress);
         if (tx !== null) found = true;
       } else if (ethers.isAddress(hashOrAddress)) {
-        // Contract address — check if it has code
         const code = await provider.getCode(hashOrAddress);
         if (code && code !== "0x") found = true;
       }
       if (found) return { networkKey: key, provider, network: net };
     } catch {
-      // Network not reachable or tx not found — try next
+      // Network not reachable or not found — try next
     }
   }
-  // Default to testnet if nothing found
   console.warn("⚠️  Could not auto-detect network. Defaulting to testnet.");
   const provider = getProvider("testnet");
   return { networkKey: "testnet", provider, network: NETWORKS.testnet };
@@ -78,6 +91,5 @@ export async function resolveNetwork(args, hashOrAddress = null) {
     return { networkKey: key, provider, network: NETWORKS[key] };
   }
   if (hashOrAddress) return autoDetectNetwork(hashOrAddress);
-  // No hints — default testnet
   return { networkKey: "testnet", provider: getProvider("testnet"), network: NETWORKS.testnet };
 }

@@ -17,18 +17,18 @@ All via natural language — no manual RPC calls or ABI decoding required.
 ### Option A — Install via npx (recommended)
 ```bash
 # Claude Code
-npx skills add https://github.com/YOUR_USERNAME/pharos-contract-intelligence ~/.claude/skills/
+npx skills add https://github.com/BisimJang/pharos-contract-intelligence ~/.claude/skills/
 
 # OpenClaw
-npx skills add https://github.com/YOUR_USERNAME/pharos-contract-intelligence ~/.openclaw/skills/
+npx skills add https://github.com/BisimJang/pharos-contract-intelligence ~/.openclaw/skills/
 
 # Codex
-npx skills add https://github.com/YOUR_USERNAME/pharos-contract-intelligence ~/.codex/skills/
+npx skills add https://github.com/BisimJang/pharos-contract-intelligence ~/.codex/skills/
 ```
 
 ### Option B — Manual install
 ```bash
-git clone https://github.com/YOUR_USERNAME/pharos-contract-intelligence
+git clone https://github.com/BisimJang/pharos-contract-intelligence
 cp -r pharos-contract-intelligence ~/.claude/skills/
 ```
 
