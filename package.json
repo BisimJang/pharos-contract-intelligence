@@ -1,0 +1,27 @@
+{
+  "name": "pharos-contract-intelligence",
+  "version": "1.0.0",
+  "description": "A Pharos Agent Center skill for debugging, analyzing, and verifying smart contracts on the Pharos blockchain.",
+  "type": "module",
+  "scripts": {
+    "debug": "node scripts/debug_transaction.js",
+    "analyze": "node scripts/analyze_contract.js",
+    "verify": "node scripts/verify_contract.js"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0",
+    "axios": "^1.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "pharos",
+    "smart-contract",
+    "blockchain",
+    "debugging",
+    "agent-skill",
+    "web3"
+  ],
+  "license": "MIT-0"
+}
