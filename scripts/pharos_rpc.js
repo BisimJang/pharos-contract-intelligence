@@ -14,7 +14,7 @@
 import { ethers } from "ethers";
 
 const TESTNET_RPC = process.env.PHAROS_TESTNET_RPC || "https://testnet.dplabs-internal.com";
-const MAINNET_RPC = process.env.PHAROS_MAINNET_RPC || "https://pharos-rpc.publicnode.com";
+const MAINNET_RPC = process.env.PHAROS_MAINNET_RPC || "https://rpc.pharos.xyz";
 
 export const NETWORKS = {
   testnet: {
@@ -28,10 +28,10 @@ export const NETWORKS = {
   mainnet: {
     name: "Pharos Mainnet",
     rpc: MAINNET_RPC,
-    chainId: 688688,
+    chainId: 1672,
     explorer: "https://pharosscan.xyz",
     explorerApi: "https://pharosscan.xyz/api",
-    nativeToken: "PHRS",
+    nativeToken: "PROS",
   },
 };
 

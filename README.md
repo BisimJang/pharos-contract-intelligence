@@ -114,10 +114,15 @@ Submit my ERC20 contract for verification on Pharosscan. Compiler: v0.8.20, opti
 
 | Network | RPC | Chain ID | Explorer |
 |---------|-----|----------|----------|
-| Pharos Testnet | `https://testnet.dplabs-internal.com` | 688688 | [pharosscan.xyz](https://pharosscan.xyz) |
-| Pharos Mainnet | `https://pharos-rpc.publicnode.com` | 688688 | [pharosscan.xyz](https://pharosscan.xyz) |
+| Pharos Testnet | `https://testnet.dplabs-internal.com` | 688688 | [testnet.pharosscan.xyz](https://testnet.pharosscan.xyz) |
+| Pharos Mainnet | `https://rpc.pharos.xyz` | 1672 | [pharosscan.xyz](https://pharosscan.xyz) |
 
 **Auto-detection**: The skill automatically detects the correct network by checking whether the transaction/address exists on testnet first, then mainnet. You can also specify explicitly: *"on Pharos testnet"* or *"on Pharos mainnet"*.
+
+> [!WARNING]
+> **RPC Authentication**
+> The public testnet RPC currently requires an API key for programmatic access. To prevent connection errors, generate a free API key at providers like ZAN or Alchemy, and export it in your terminal before running your agent:
+> `export PHAROS_TESTNET_RPC="https://your-api-key..."`
 
 ---
 
